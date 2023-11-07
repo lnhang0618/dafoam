@@ -1,0 +1,419 @@
+ 
+-------------------------------------------------------------------------------
+|                               DAFoam v3.0.8                                 |
+-------------------------------------------------------------------------------
+ 
+Selecting DASimpleFoam for DASolver
+I/O    : uncollated
+Case   : /home/dafoamuser/workspace/tutorials/PeriodicHill_FieldInversion_v2
+nProcs : 1
+Create time
+
+Overriding DebugSwitches according to controlDict
+    SolverPerformance 0;
+
+Create mesh for time = 0
+Initializing mesh and runtime for DASolver
+DAOpton initialized 
+Selecting DASimpleFoam for DASolver
+I/O    : uncollated
+Case   : /home/dafoamuser/workspace/tutorials/PeriodicHill_FieldInversion_v2
+nProcs : 1
+Create time
+
+Overriding DebugSwitches according to controlDict
+    SolverPerformance 0;
+
+Create mesh for time = 0
+Initializing mesh and runtime for DASolver
+DAOpton initialized 
+Initializing fields for DASimpleFoam
+Create simpleControl.
+
+SIMPLE: no convergence criteria found. Calculations will run for 4000 steps.
+
+Reading field p
+
+Reading field U
+
+Reading/calculating face flux field phi
+
+Creating source term. 
+Selecting incompressible transport model Newtonian
+Selecting turbulence model type RAS
+Selecting RAS turbulence model kv2OmegaArFieldInversion
+Selecting patchDistMethod meshWave
+No MRF models present
+
+Selecting kv2OmegaArFieldInversion for DATurbulenceModel
+Selecting DASimpleFoam for DAStateInfo
+Selecting DASimpleFoam for DAStateInfo
+Adjoint States: 
+7
+(
+v2 modelState
+U volVectorState
+k modelState
+Ar modelState
+phi surfaceScalarState
+p volScalarState
+omega modelState
+)
+Global Cells: 3500
+Global Faces: 14120
+Global Xv: 21726
+Undecomposed points: 7242
+Global Adjoint States: 42120
+Selecting DASimpleFoam for DAStateInfo
+Selecting DASimpleFoam for DAResidual
+Selecting DASimpleFoam for DAStateInfo
+Creating finite volume options from "system/fvOptions"
+
+
+SIMPLE: no convergence criteria found. Calculations will run for 4000 steps.
+
+DACheckMesh Thresholds: 
+maxNonOrth: 70
+maxSkewness: 4
+maxAspectRatio: 1000
+maxIncorrectlyOrientedFaces: 0
+Selecting type: fieldInversion for DAObjFunc. Name: FI part: Ux
+Selecting DASimpleFoam for DAStateInfo
+    Adding cells with centre within boxes 1((-10 -10 -10) (10 10 10))
+Selecting type: fieldInversion for DAObjFunc. Name: FI part: beta
+Selecting DASimpleFoam for DAStateInfo
+    Adding cells with centre within boxes 1((-10 -10 -10) (10 10 10))
+Initializing fields for DASimpleFoam
+Create simpleControl.
+
+SIMPLE: no convergence criteria found. Calculations will run for 4000 steps.
+
+Reading field p
+
+Reading field U
+
+Reading/calculating face flux field phi
+
+Creating source term. 
+Selecting incompressible transport model Newtonian
+Selecting turbulence model type RAS
+Selecting RAS turbulence model kv2OmegaArFieldInversion
+Selecting patchDistMethod meshWave
+No MRF models present
+
+Selecting kv2OmegaArFieldInversion for DATurbulenceModel
+Selecting DASimpleFoam for DAStateInfo
+Selecting DASimpleFoam for DAStateInfo
+Adjoint States: 
+7
+(
+v2 modelState
+U volVectorState
+k modelState
+Ar modelState
+phi surfaceScalarState
+p volScalarState
+omega modelState
+)
+Global Cells: 3500
+Global Faces: 14120
+Global Xv: 21726
+Undecomposed points: 7242
+Global Adjoint States: 42120
+Selecting DASimpleFoam for DAStateInfo
+Selecting DASimpleFoam for DAResidual
+Selecting DASimpleFoam for DAStateInfo
+Creating finite volume options from "system/fvOptions"
+
+
+SIMPLE: no convergence criteria found. Calculations will run for 4000 steps.
+
+DACheckMesh Thresholds: 
+maxNonOrth: 70
+maxSkewness: 4
+maxAspectRatio: 1000
+maxIncorrectlyOrientedFaces: 0
+Selecting type: fieldInversion for DAObjFunc. Name: FI part: Ux
+Selecting DASimpleFoam for DAStateInfo
+    Adding cells with centre within boxes 1((-10 -10 -10) (10 10 10))
+Selecting type: fieldInversion for DAObjFunc. Name: FI part: beta
+Selecting DASimpleFoam for DAStateInfo
+    Adding cells with centre within boxes 1((-10 -10 -10) (10 10 10))
+DAFoam option dictionary: 
+{
+    solverName      DASimpleFoam;
+    primalMinResTol 1e-08;
+    primalBC
+    {
+        fvSource
+        {
+            value           6.634074021107811e-06;
+            comp            0;
+        }
+    }
+    normalizeStates
+    {
+        U               0.028;
+        p               0.000392;
+        nuTilda         0.001;
+        phi             1;
+    }
+    objFunc
+    {
+        FI
+        {
+            Ux
+            {
+                type            fieldInversion;
+                source          boxToCell;
+                min             3 { -10 };
+                max             3 { 10 };
+                data            UData;
+                scale           1;
+                addToAdjoint    1;
+                weightedSum     1;
+                weight          20.84507749342037;
+            }
+            beta
+            {
+                type            fieldInversion;
+                source          boxToCell;
+                min             3 { -10 };
+                max             3 { 10 };
+                data            beta;
+                scale           1e-10;
+                addToAdjoint    1;
+                weightedSum     0;
+            }
+        }
+    }
+    designVar
+    {
+        beta
+        {
+            designVarType   Field;
+            fieldName       betaFieldInversion;
+            fieldType       scalar;
+        }
+    }
+    designSurfaces  1 ( ALL_OPENFOAM_WALL_PATCHES );
+    couplingInfo
+    {
+        aerostructural
+        {
+            active          0;
+            pRef            0;
+            propMovement    0;
+            couplingSurfaceGroups
+            {
+                wingGroup       2 ( wing wing_te );
+            }
+        }
+        aerothermal
+        {
+            active          0;
+            couplingSurfaceGroups
+            {
+                wallGroup       1 ( fin_wall );
+            }
+        }
+        aeroacoustic
+        {
+            active          0;
+            pRef            0;
+            couplingSurfaceGroups
+            {
+                blade1Group     2 ( blade1_ps blade1_ss );
+                blade2Group     1 ( blade2 );
+            }
+        }
+    }
+    aeroPropulsive
+    {
+    }
+    primalOnly      0;
+    fvSource
+    {
+    }
+    adjEqnSolMethod Krylov;
+    primalVarBounds
+    {
+        UMax            1000;
+        UMin            -1000;
+        pMax            500000;
+        pMin            20000;
+        p_rghMax        500000;
+        p_rghMin        20000;
+        eMax            500000;
+        eMin            100000;
+        TMax            1000;
+        TMin            100;
+        hMax            500000;
+        hMin            100000;
+        DMax            1e+16;
+        DMin            -1e+16;
+        rhoMax          5;
+        rhoMin          0.2;
+        nuTildaMax      1e+16;
+        nuTildaMin      1e-16;
+        kMax            1e+16;
+        kMin            1e-16;
+        omegaMax        1e+16;
+        omegaMin        1e-16;
+        epsilonMax      1e+16;
+        epsilonMin      1e-16;
+        ReThetatMax     1e+16;
+        ReThetatMin     1e-16;
+        gammaIntMax     1e+16;
+        gammaIntMin     1e-16;
+    }
+    discipline      aero;
+    multiPoint      0;
+    nMultiPoints    1;
+    adjPartDerivFDStep
+    {
+        State           1e-06;
+        FFD             0.001;
+        BC              0.01;
+        AOA             0.001;
+        ACTP            0.01;
+        ACTD            0.01;
+        ACTL            0.01;
+    }
+    transonicPCOption -1;
+    unsteadyAdjoint
+    {
+        mode            None;
+        nTimeInstances  -1;
+        periodicity     -1;
+    }
+    objFuncAvgStart 1;
+    adjPCLag        10000;
+    useAD
+    {
+        mode            reverse;
+        dvName          None;
+        seedIndex       -9999;
+    }
+    rigidBodyMotion
+    {
+        mode            dummy;
+    }
+    hasIterativeBC  0;
+    useConstrainHbyA 0;
+    runStatus       None;
+    printPYDAFOAMOptions 0;
+    printDAOptions  1;
+    debug           1;
+    writeJacobians  1 ( None );
+    printInterval   100;
+    printIntervalUnsteady 500;
+    primalMinResTolDiff 100000;
+    adjUseColoring  1;
+    adjEqnOption
+    {
+        globalPCIters   0;
+        asmOverlap      1;
+        localPCIters    1;
+        jacMatReOrdering natural;
+        pcFillLevel     1;
+        gmresMaxIters   1000;
+        gmresRestart    1000;
+        gmresRelTol     1e-08;
+        gmresAbsTol     1e-14;
+        gmresTolDiff    100;
+        useNonZeroInitGuess 0;
+        useMGSO         0;
+        printInfo       1;
+        fpMaxIters      1000;
+        fpRelTol        1e-06;
+        fpMinResTolDiff 100;
+        fpPCUpwind      0;
+        dynAdjustTol    1;
+    }
+    normalizeResiduals 10 ( URes pRes p_rghRes nuTildaRes phiRes TRes DRes kRes omegaRes epsilonRes );
+    maxResConLv4JacPCMat
+    {
+        pRes            2;
+        phiRes          1;
+        URes            2;
+        TRes            2;
+        nuTildaRes      2;
+        kRes            2;
+        epsilonRes      2;
+        omegaRes        2;
+        p_rghRes        2;
+        DRes            2;
+    }
+    jacLowerBounds
+    {
+        dRdW            1e-30;
+        dRdWPC          1e-30;
+    }
+    maxTractionBCIters 100;
+    decomposeParDict
+    {
+        method          scotch;
+        simpleCoeffs
+        {
+            n               3 ( 2 2 1 );
+            delta           0.001;
+        }
+        preservePatches 1 ( None );
+        singleProcessorFaceSets 1 ( None );
+    }
+    adjStateOrdering cell;
+    meshSurfaceFamily None;
+    checkMeshThreshold
+    {
+        maxAspectRatio  1000;
+        maxNonOrth      70;
+        maxSkewness     4;
+        maxIncorrectlyOrientedFaces 0;
+    }
+    writeSensMap    1 ( NONE );
+    writeDeformedFFDs 0;
+    maxCorrectBCCalls 10;
+    writeMinorIterations 0;
+    runLowOrderPrimal4PC
+    {
+        active          0;
+    }
+    wingProp
+    {
+        test_propeller_default
+        {
+            active          0;
+            nForceSections  10;
+            axis            3 ( 1 0 0 );
+            rotationCenter  3 { 0 };
+            actEps          0.02;
+            rotDir          right;
+            interpScheme    Poly4Gauss;
+            bladeName       blade;
+        }
+    }
+    primalMinIters  -1;
+    tensorflow
+    {
+        active          0;
+        modelName       model;
+        nInputs         1;
+        nOutputs        1;
+        batchSize       1000;
+    }
+}
+
+Reading OpenFOAM mesh information...
+I/O    : uncollated
+Case   : /home/dafoamuser/workspace/tutorials/PeriodicHill_FieldInversion_v2
+nProcs : 1
+Reading the OpenFOAM mesh..
+Overriding DebugSwitches according to controlDict
+    SolverPerformance 0;
+
+I/O    : uncollated
+pyDAFoam initialization done!
+Updating the OpenFOAM field...
+Setting up primal boundary conditions based on pyOptions: 
+Setting fvSource to 6.634074021107811e-06
