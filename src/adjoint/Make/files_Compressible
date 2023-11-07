@@ -15,9 +15,9 @@ DAModel/DATurbulenceModel/DASpalartAllmarasFv3.C
 DAModel/DATurbulenceModel/DASpalartAllmarasFv3FieldInversion.C
 DAModel/DATurbulenceModel/DAkOmegaFieldInversionOmega.C
 DAModel/DATurbulenceModel/DAkOmegaSST.C
-DAModel/DATurbulenceModel/DAkOmega.C
 DAModel/DATurbulenceModel/DAkOmegaSSTFieldInversion.C
 DAModel/DATurbulenceModel/DAkEpsilon.C
+DAModel/DATurbulenceModel/DAkv2OmegaArFieldInversion.C
 
 DAModel/DATurbulenceModel/DADummyTurbulenceModel.C
 
@@ -49,7 +49,6 @@ DAObjFunc/DAObjFuncVariableVolSum.C
 DAObjFunc/DAObjFuncMeshQualityKS.C
 DAObjFunc/DAObjFuncFieldInversion.C
 DAObjFunc/DAObjFuncPatchMean.C
-DAObjFunc/DAObjFuncLocation.C
 
 DAFvSource/DAFvSource.C
 DAFvSource/DAFvSourceActuatorDisk.C
@@ -95,6 +94,7 @@ models/SpalartAllmarasFv3/makeSpalartAllmarasFv3Compressible.C
 models/SpalartAllmarasFv3FieldInversion/makeSpalartAllmarasFv3FieldInversionCompressible.C
 models/kOmegaSSTFieldInversion/makekOmegaSSTFieldInversionCompressible.C
 models/kOmegaFieldInversionOmega/makekOmegaFieldInversionOmegaCompressible.C
+models/kv2OmegaArFieldInversion/makekv2OmegaArFieldInversionCompressible.C
 
 
 models/MRFDF/MRFZoneDF.C

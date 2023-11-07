@@ -1,0 +1,1 @@
+../DAObjFunc/DAObjFuncPower.C

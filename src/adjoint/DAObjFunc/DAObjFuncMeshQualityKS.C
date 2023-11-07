@@ -45,37 +45,6 @@ DAObjFuncMeshQualityKS::DAObjFuncMeshQualityKS(
     objFuncDict_.readEntry<scalar>("coeffKS", coeffKS_);
 
     objFuncDict_.readEntry<word>("metric", metric_);
-
-    // the polyMeshTools funcs are not fully AD in parallel, so the mesh quality
-    // computed at the processor faces will not be properly back-propagate in AD
-    // we can ignore the mesh quality at proc patches if includeProcPatches = False (default)
-    includeProcPatches_ = objFuncDict_.lookupOrDefault<label>("includeProcPatches", 0);
-    includeFaceList_.setSize(mesh_.nFaces(), 1);
-    if (!includeProcPatches_)
-    {
-        label nInterF = mesh_.nInternalFaces();
-        label faceCounter = 0;
-        forAll(mesh.boundaryMesh(), patchI)
-        {
-            if (mesh.boundaryMesh()[patchI].type() == "processor")
-            {
-                forAll(mesh.boundaryMesh()[patchI], faceI)
-                {
-                    includeFaceList_[nInterF + faceCounter] = 0;
-                    faceCounter += 1;
-                }
-            }
-            else
-            {
-                faceCounter += mesh.boundaryMesh()[patchI].size();
-            }
-        }
-    }
-
-    if (daOption.getOption<label>("debug"))
-    {
-        Info << "includeFaceList " << includeFaceList_ << endl;
-    }
 }
 
 /// calculate the value of objective function
@@ -120,12 +89,9 @@ void DAObjFuncMeshQualityKS::calcObjFunc(
                 mesh_.cellCentres()));
 
         // calculate the KS mesh quality
-        forAll(faceOrthogonality, faceI)
+        forAll(faceOrthogonality, cellI)
         {
-            if (includeFaceList_[faceI] == 1)
-            {
-                objFuncValue += exp(coeffKS_ * faceOrthogonality[faceI]);
-            }
+            objFuncValue += exp(coeffKS_ * faceOrthogonality[cellI]);
 
             if (objFuncValue > 1e200)
             {
@@ -144,9 +110,9 @@ void DAObjFuncMeshQualityKS::calcObjFunc(
 
         // Face based non ortho angle
         scalarField nonOrthoAngle = faceOrthogonality;
-        forAll(faceOrthogonality, faceI)
+        forAll(faceOrthogonality, cellI)
         {
-            scalar val = faceOrthogonality[faceI];
+            scalar val = faceOrthogonality[cellI];
             // bound it to less than 1.0 - 1e-6. We can't let val = 1
             // because its derivative will be divided by zero
             scalar boundV = 1.0 - 1e-6;
@@ -163,16 +129,14 @@ void DAObjFuncMeshQualityKS::calcObjFunc(
             // convert rad to degree
             scalar pi = constant::mathematical::pi;
             scalar angleDeg = angleRad * 180.0 / pi;
-            nonOrthoAngle[faceI] = angleDeg;
+            nonOrthoAngle[cellI] = angleDeg;
         }
 
         // calculate the KS mesh quality
-        forAll(nonOrthoAngle, faceI)
+        forAll(nonOrthoAngle, cellI)
         {
-            if (includeFaceList_[faceI] == 1)
-            {
-                objFuncValue += exp(coeffKS_ * nonOrthoAngle[faceI]);
-            }
+
+            objFuncValue += exp(coeffKS_ * nonOrthoAngle[cellI]);
 
             if (objFuncValue > 1e200)
             {
@@ -180,6 +144,7 @@ void DAObjFuncMeshQualityKS::calcObjFunc(
                                   << "Reduce coeffKS! " << abort(FatalError);
             }
         }
+
     }
     else if (metric_ == "faceSkewness")
     {
@@ -192,12 +157,10 @@ void DAObjFuncMeshQualityKS::calcObjFunc(
                 mesh_.cellCentres()));
 
         // calculate the KS mesh quality
-        forAll(faceSkewness, faceI)
+        forAll(faceSkewness, cellI)
         {
-            if (includeFaceList_[faceI] == 1)
-            {
-                objFuncValue += exp(coeffKS_ * faceSkewness[faceI]);
-            }
+
+            objFuncValue += exp(coeffKS_ * faceSkewness[cellI]);
 
             if (objFuncValue > 1e200)
             {
@@ -205,6 +168,7 @@ void DAObjFuncMeshQualityKS::calcObjFunc(
                                   << "Reduce coeffKS! " << abort(FatalError);
             }
         }
+
     }
     else
     {
